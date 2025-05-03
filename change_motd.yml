@@ -1,0 +1,18 @@
+ GNU nano 4.8        /root/ansible_playbooks/change_motd.yml         Modified  
+---
+- name: Change MOTD with system info
+  hosts: all
+  become: true
+  vars:
+    welcome_message: |
+      Hello, {{ ansible_user }}!
+      Host: {{ ansible_hostname }}
+      IP: {{ ansible_default_ipv4.address }}
+      Good day, system administrator
+ 
+  tasks:
+    - name: Update MOTD
+      ansible.builtin.copy:
+        content: "{{ welcome_message }}"
+        dest: /etc/motd
+        mode: '0644'
