@@ -1,0 +1,29 @@
+---
+- name: Download and extract Kafka
+  hosts: all
+  become: true
+  vars:
+    kafka_version: "3.7.0"
+    scala_version: "2.13"
+
+  tasks:
+    - name: Create directory for Kafka
+      ansible.builtin.file:
+        path: /opt/kafka
+        state: directory
+        mode: '0755'
+
+    - name: Download Kafka from archive mirror
+      ansible.builtin.get_url:
+        url: "https://archive.apache.org/dist/kafka/{{ kafka_version }}/kafka_{{ scala_version }}-{{ kafka_version }}.tgz"
+        dest: /tmp/kafka.tgz
+        timeout: 30
+        validate_certs: no
+
+    - name: Extract Kafka
+      ansible.builtin.unarchive:
+        src: /tmp/kafka.tgz
+        dest: /opt/kafka
+        remote_src: yes
+        extra_opts: ["--strip-components=1"]
+
